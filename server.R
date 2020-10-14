@@ -13,22 +13,37 @@ library(RMariaDB)
 library(tidytree) 
 library(tibble)
 library(treeio)
-library(shiny)
-library(shinythemes)
+#library(shiny)
+#library(shinythemes)
 
-# Set working directory and read tree into the app
-setwd("C:/Users/abond/Desktop/CZEUM/Interact_Tree")
+
+
+# Define server logic requigrey to make tree
+#server <- function(input, output) {
+shinyServer(function(input, output) {  
+  # Set working directory and read tree into the app
+#setwd("C:/Users/abond/Desktop/CZEUM/Interact_Tree")
 tree <- treeio::read.newick("RAxML_bipartitions_CZEUM.tre")
 
 # Reroot tree on outgroup (Rozella)
 tree1 <- root(tree, node=979)
 
 #Make information table
+if (file.exists('/etc/env.R')) { source('/etc/env.R') }
+host1<-Sys.getenv("hostdb")
+user1<-Sys.getenv("userdb")
+password1<-Sys.getenv("passworddb")
+dbname1<-Sys.getenv("dbnamedb")
+#user1<-"appdevch_invento"
+#password1<-"N(_KgT1?)m[5"
+#dbname1<-"appdevch_czeum"
+#host1<-"whe02.lsa.umich.edu"
+
 con <- dbConnect(RMariaDB::MariaDB(), 
-                   host = "whe02.lsa.umich.edu",
-                   user = "appdevch_invento", 
-                   password = "N(_KgT1?)m[5", 
-                   dbname = "appdevch_czeum")
+                   host = host1,
+                   user = user1, 
+                   password = password1, 
+                   dbname = dbname1)
   
   CZEUM_data <- dbSendQuery(con, "SELECT `id`, `Isolate_ID`, `Genus`, `species`, `Family`, `Order_1`, `Phylum`, `Medium`, `18S_rDNA`, `28S_rDNA`, `ITS_rDNA`, `Substrate_Host`, `CollectionDate`, `Collector`, `Country`, `State`, `City`, `Location`, `Type`, `image` FROM `czeum_data`
 ")
@@ -43,56 +58,6 @@ con <- dbConnect(RMariaDB::MariaDB(),
   join <- left_join(new_labels_links, data, by = c("id" = "Isolate_ID")) 
 
 
-# Define UI for application 
-ui <- navbarPage(
-  
-  # Theme
-  theme=shinytheme("yeti"),
-  
-  # Application title
-  title = 'CZEUM Interactive Phylogeny',
-  
-  # Show a plot and output table 
-  sidebarLayout(
-    mainPanel(
-      plotOutput("treeDisplay",  
-                 width = "100%",
-                 height = "6000px",
-                 click = "plot_click",
-                 dblclick = "plot_dblclick",
-                 brush = brushOpts(
-                   id = "plot_brush",
-                   clip = FALSE,
-                   resetOnNew = TRUE)),
-      
-      dataTableOutput("info")
-
-    ),
-    
-    # Instructions for user, slider bar for font size, text output
-    sidebarPanel(
-      style = "position:fixed;width:30%;",
-      
-      a("CZEUM Homepage", href = "https://czeum.herb.lsa.umich.edu/"),
-    
-      
-      h6("Brush and double click inside of rectangle to zoom"),
-      h6("Double click again to exit"),
-      h6("Single click on tips for more information"),
-      
-      sliderInput(inputId = "text",
-                  label = "Text Size",                            
-                  min = 2, max = 5, step = 0.25, value = 2.5),
-      
-      h6("Blue = Available"),
-      h6("Red = Not Available")
-    )
-  )
-)
-
-# Define server logic requigrey to make tree
-server <- function(input, output) {
-  
   ranges <- reactiveValues(x = NULL, y = NULL)
   
   # Plot phylogenetic tree and apply new labels
@@ -180,11 +145,7 @@ server <- function(input, output) {
     options = list(dom = 't', columnDefs = list(list(targets = c(0, 1, 2, 3, 4, 5, 6, 7, 8), searchable = FALSE)))
     
     )
-}
+})
 
 # Run the application
-shinyApp(ui, server)
-
-
-
-
+#shinyServer(ui, server)
