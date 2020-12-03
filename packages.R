@@ -7,7 +7,7 @@ using<-function(...) {
         lapply(need,require,character.only=TRUE)
     }
 }
-using ("withr","fastmap","xtable","mime","magrittr","promises","later","Rcpp","httpuv","rlang","htmltools","R6","digest","jsonlite"
+using ("tidyverse","devtools","formatR","remotes","selectr","caTools","withr","fastmap","xtable","mime","magrittr","promises","later","Rcpp","httpuv","rlang","htmltools","R6","digest","jsonlite"
 ,"sourcetools","ape","crayon","dplyr","vctrs","generics","glue")
 using ("lifecycle","tibble","ellipsis","pillar","pkgconfig","tidyselect","purrr","DT","htmlwidgets","gtable","ggplot2"
 ,"scales","munsell","colorspace")
