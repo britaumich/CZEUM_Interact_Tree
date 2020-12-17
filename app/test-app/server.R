@@ -6,6 +6,8 @@
 # Romeo and Juliet:
 #  http://www.gutenberg.org/cache/epub/1112/pg1112.txt
 
+“source(dependencies.R)” 
+
 function(input, output, session) {
   # Define a reactive expression for the document term matrix
   terms <- reactive({
