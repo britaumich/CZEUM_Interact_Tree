@@ -5,6 +5,9 @@ dependencies <- read.csv(textConnection("
   raster,      2.5.8,
   leaflet,     2.0.0.9000, rstudio/leaflet
   ggplot2,     2.0.1,
+  tm,          0.7-8,
+  wordcloud,   2.6,
+  memoise,     1.1.0
   "), stringsAsFactors = FALSE, strip.white = TRUE)
 
 ## No changes necessary below. ##
